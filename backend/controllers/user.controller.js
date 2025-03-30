@@ -1,4 +1,5 @@
 import { User } from "../models/user.model.js";
+import { Post } from "../models/post.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import getDataUri from "../utils/dataUri.js";
@@ -68,6 +69,16 @@ export const loginUser = async (req, res) => {
       });
     }
 
+    const populatedPosts = await Promise.all(
+      user.posts.map(async (postId) => {
+        const post = await Post.findById(postId);
+        if (post.author.equals(user._id)) {
+          return post;
+        }
+        return null;
+      })
+    );
+
     user = {
       _id: user._id,
       username: user.username,
@@ -76,7 +87,7 @@ export const loginUser = async (req, res) => {
       bio: user.bio,
       followers: user.followers,
       following: user.following,
-      posts: user.posts,
+      posts: populatedPosts,
     };
 
     const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
@@ -209,7 +220,7 @@ export const followOrUnfollow = async (req, res) => {
           { $pull: { followers: loggedInUserId } }
         ),
       ]);
-      
+
       return res.status(200).json({
         message: "Unfollowed successfully",
         success: true,

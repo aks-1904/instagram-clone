@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import connectDB from './utils/db.js';
 import userRoute from './routes/user.route.js';
 import postRoute from './routes/post.route.js';
+import messageRoute from './routes/message.route.js';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use("/user", userRoute);
 app.use("/post", postRoute);
+app.use("/message", messageRoute);
 
 app.get("/", (req, res)=>{
     return res.status(200).json({
