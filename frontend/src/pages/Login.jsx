@@ -6,6 +6,7 @@ import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -101,6 +102,7 @@ const Login = () => {
           </div>
           {loading ? (
             <Button disabled className={"cursor-pointer w-full"}>
+              <Loader2 className="animate-spin mr-2 h-4 w-4" />
               Please Wait...
             </Button>
           ) : (

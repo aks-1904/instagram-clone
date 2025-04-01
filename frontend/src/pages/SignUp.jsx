@@ -5,7 +5,8 @@ import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import axios from "axios";
-
+import { Loader2 } from 'lucide-react';
+ 
 const SignUp = () => {
   const [input, setInput] = useState({
     username: "",
@@ -117,6 +118,7 @@ const SignUp = () => {
           </div>
           {loading ? (
             <Button disabled className={"cursor-pointer w-full"}>
+              <Loader2 className="animate-spin mr-2 h-4 w-4" />
               Please Wait...
             </Button>
           ) : (
