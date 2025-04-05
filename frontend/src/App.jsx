@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Home from "./components/Main/Home";
 import Chat from "./components/Main/Chat";
 import Logout from "./components/Main/Logout";
+import CreatePost from "./components/Main/CreatePost";
 
 const BrowserRouter = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const BrowserRouter = createBrowserRouter([
       {
         path: "/logout",
         element: <Logout />,
+      },
+      {
+        path: "/create",
+        element: <CreatePost />
       }
     ],
   },

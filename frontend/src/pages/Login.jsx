@@ -7,6 +7,8 @@ import { Button } from "../components/ui/button";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthUser } from "../redux/authSlice";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -20,6 +22,7 @@ const Login = () => {
   };
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -34,12 +37,13 @@ const Login = () => {
       });
 
       if (res.data.success) {
+        dispatch(setAuthUser(res.data.user));
         toast.success(res.data.message);
         setInput({
           email: "",
           password: "",
         });
-        navigate("/", {
+        navigate("/home", {
           replace: true,
         });
       }
