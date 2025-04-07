@@ -7,8 +7,14 @@ import { readFileAsDataUrl } from "../../lib/utils";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setPosts } from "../../redux/postSlice";
 
 const CreatePost = ({ open, setOpen }) => {
+  const { user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const { posts } = useSelector((store) => store.post);
+
   const createPostHandler = async () => {
     setLoading(true);
 
@@ -19,20 +25,20 @@ const CreatePost = ({ open, setOpen }) => {
 
       const res = await axios.post("http://localhost:8080/post/add", formData, {
         headers: {
-            'Content-Type': 'multipart/form-data'
+          "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
       });
 
-      if(res.data.success){
+      if (res.data.success) {
+        dispatch(setPosts([res.data.post, ...posts]));
         toast.success(res.data.message);
         setOpen(false);
       }
     } catch (error) {
       toast.error(error.response.data.message);
-    }
-    finally{
-        setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
   const [caption, setCaption] = useState("");
@@ -60,12 +66,12 @@ const CreatePost = ({ open, setOpen }) => {
         </DialogHeader>
         <div onSubmit={createPostHandler} className="flex gap-3 items-center">
           <Avatar>
-            <AvatarImage src={""} alt={"image"} />
+            <AvatarImage src={user?.profilePicture} alt={"image"} />
             <AvatarFallback>AK</AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="font-semibold text-sm">Username</h1>
-            <span className="text-gray-600 text-xs">Bio</span>
+            <h1 className="font-semibold text-sm">{user?.username}</h1>
+            <span className="text-gray-600 text-xs">{user?.bio}</span>
           </div>
         </div>
         <Textarea

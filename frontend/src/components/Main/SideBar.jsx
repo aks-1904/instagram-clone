@@ -78,7 +78,7 @@ const SideBar = () => {
           <AvatarFallback>AK</AvatarFallback>
         </Avatar>
       ),
-      text: "Profile",
+      text: user?.username,
     },
     {
       deactiveIcon: <IoLogOutSharp size={30} />,

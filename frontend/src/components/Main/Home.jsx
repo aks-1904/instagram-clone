@@ -1,8 +1,11 @@
 import React from "react";
 import Posts from "./Posts";
 import RightSideBar from "./RightSideBar";
+import useGetAllPosts from "../../hooks/useGetAllPosts";
 
 const Home = () => {
+  useGetAllPosts();
+
   return (
     <div className="flex">
       <div className="flex-1">

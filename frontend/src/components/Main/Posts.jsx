@@ -1,11 +1,14 @@
 import React from "react";
 import Post from "./Post";
+import { useSelector } from "react-redux";
 
 const Posts = () => {
+  const { posts } = useSelector((store) => store.post);
+
   return (
     <div className="flex items-center flex-col gap-20">
-      {[1, 2, 3, 4].map((_, idx) => (
-        <Post key={idx} />
+      {posts.map((postData) => (
+        <Post key={postData._id} data={postData} />
       ))}
     </div>
   );
