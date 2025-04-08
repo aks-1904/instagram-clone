@@ -3,7 +3,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { FaRegComment } from "react-icons/fa";
+import { FaHeart, FaRegComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { IoIosSend } from "react-icons/io";
 import { FaRegBookmark } from "react-icons/fa";
@@ -20,6 +20,9 @@ const Post = ({ data }) => {
   const [open, setOpen] = useState(false);
   const { posts } = useSelector((store) => store.post);
   const dispatch = useDispatch();
+  const [liked, setLiked] = useState(data?.likes?.includes(user?._id));
+  const [postLike, setPostLike] = useState(data?.likes?.length);
+  const [allPostComments, setAllPostComments] = useState(data?.comments);
 
   const deletePostHandler = async () => {
     try {
@@ -40,6 +43,74 @@ const Post = ({ data }) => {
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const likeOrDislikeHandler = async () => {
+    try {
+      const action = liked ? "dislike" : "like";
+      const res = await axios.get(
+        `http://localhost:8080/post/${action}/${data?._id}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (res.data.success) {
+        const updatedLikes = liked ? postLike - 1 : postLike + 1;
+        setLiked(!liked);
+        setPostLike(updatedLikes);
+
+        const updatedPostData = posts?.map((post) =>
+          post?._id === post?._id
+            ? {
+                ...post,
+                likes: liked
+                  ? post?.likes.filter((id) => id !== user?._id)
+                  : [...post?.likes, user?._id],
+              }
+            : post
+        );
+        dispatch(setPosts(updatedPostData));
+
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const commentHandler = async () => {
+    try {
+      const res = await axios.post(
+        `http://localhost:8080/post/comment/${data?._id}`,
+        { text: comment },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (res.data.success) {
+        const updatedComments = [...allPostComments, res.data.comment];
+        setAllPostComments(updatedComments);
+
+        const updatedPostData = posts.map((p) =>
+          p?._id === data?._id
+            ? {
+                ...p,
+                comments: updatedComments,
+              }
+            : p
+        );
+        dispatch(setPosts(updatedPostData));
+        setComment("");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
       toast.error(error.response.data.message);
     }
   };
@@ -95,10 +166,19 @@ const Post = ({ data }) => {
       </div>
       <div className="flex mt-3 items-center justify-between">
         <div className="flex gap-3">
-          <FaRegHeart
-            size={30}
-            className="cursor-pointer hover:text-gray-600"
-          />
+          {liked ? (
+            <FaHeart
+              onClick={likeOrDislikeHandler}
+              size={30}
+              className="cursor-pointer text-red-500 hover:text-red-400"
+            />
+          ) : (
+            <FaRegHeart
+              onClick={() => likeOrDislikeHandler(data?._id)}
+              size={30}
+              className="cursor-pointer hover:text-gray-600"
+            />
+          )}
           <FaRegComment
             onClick={() => setCommentDialog(true)}
             size={30}
@@ -113,7 +193,7 @@ const Post = ({ data }) => {
           />
         </div>
       </div>
-      <span className="font-medium block my-2">{data?.likes.length} likes</span>
+      <span className="font-medium block my-2">{postLike} likes</span>
       <p className="mb-3">
         <span className="font-medium mr-2">{data?.author?.username}</span>
         <span className="text-gray-700">{data?.caption}</span>
@@ -125,6 +205,7 @@ const Post = ({ data }) => {
         View all {data?.comments.length} comments
       </span>
       <CommentDialog
+        commentHandler={commentHandler}
         open={commentDialog}
         setOpen={setCommentDialog}
         comment={comment}
@@ -139,7 +220,12 @@ const Post = ({ data }) => {
           className="outline-none text-sm w-full"
         />
         {comment.trim() && (
-          <span className="text-blue-500 cursor-pointer">Send</span>
+          <span
+            onClick={commentHandler}
+            className="text-blue-500 cursor-pointer"
+          >
+            Send
+          </span>
         )}
       </div>
     </div>

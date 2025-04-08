@@ -106,7 +106,7 @@ const CommentDialog = (props) => {
                 className="focus-visible:outline-none w-full"
               />
               {props.comment.trim() && (
-                <span className="text-blue-500 text-bold hover:underline cursor-pointer">
+                <span onClick={props.commentHandler} className="text-blue-500 text-bold hover:underline cursor-pointer">
                   Send
                 </span>
               )}
