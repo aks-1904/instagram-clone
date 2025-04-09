@@ -7,7 +7,7 @@ const Home = () => {
   useGetAllPosts();
 
   return (
-    <div className="flex">
+    <div className="flex justify-center ml-[20vw]">
       <div className="flex-1">
         <Posts />
       </div>

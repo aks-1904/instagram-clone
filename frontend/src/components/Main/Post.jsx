@@ -11,7 +11,8 @@ import CommentDialog from "./CommentDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import axios from "axios";
-import { setPosts } from "../../redux/postSlice";
+import { setPosts, setSelectedPost } from "../../redux/postSlice";
+import { Badge } from "@/components/ui/badge";
 
 const Post = ({ data }) => {
   const [comment, setComment] = useState("");
@@ -124,6 +125,7 @@ const Post = ({ data }) => {
             <AvatarFallback>AK</AvatarFallback>
           </Avatar>
           <p>{data?.author?.username}</p>
+          {user?._id === data?.author?._id && <Badge variant={"secondary"}>Author</Badge>}
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger className={"cursor-pointer"}>
@@ -180,7 +182,10 @@ const Post = ({ data }) => {
             />
           )}
           <FaRegComment
-            onClick={() => setCommentDialog(true)}
+            onClick={() => {
+              dispatch(setSelectedPost(data));
+              setCommentDialog(true);
+            }}
             size={30}
             className="cursor-pointer hover:text-gray-600"
           />
@@ -198,12 +203,17 @@ const Post = ({ data }) => {
         <span className="font-medium mr-2">{data?.author?.username}</span>
         <span className="text-gray-700">{data?.caption}</span>
       </p>
-      <span
-        onClick={() => setCommentDialog(true)}
-        className="hover:underline text-gray-600 cursor-pointer"
-      >
-        View all {data?.comments.length} comments
-      </span>
+      {data?.comments.length > 0 && (
+        <span
+          onClick={() => {
+            dispatch(setSelectedPost(data));
+            setCommentDialog(true);
+          }}
+          className="hover:underline text-gray-600 cursor-pointer"
+        >
+          View all {data?.comments.length} comments
+        </span>
+      )}
       <CommentDialog
         commentHandler={commentHandler}
         open={commentDialog}

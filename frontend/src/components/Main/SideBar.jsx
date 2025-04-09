@@ -13,8 +13,10 @@ import { FaHeart } from "react-icons/fa";
 import { CiSquarePlus } from "react-icons/ci";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { IoLogOutSharp } from "react-icons/io5";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CreatePost from "./CreatePost";
+import { setAuthUser } from "../../redux/authSlice";
+import { setPosts, setSelectedPost } from "../../redux/postSlice";
 
 const SideBar = () => {
   const location = useLocation();
@@ -87,16 +89,20 @@ const SideBar = () => {
     },
   ];
 
+  const dispatch = useDispatch();
   const sideBarClickHandler = (text) => {
-    if (text === "Logout")
+    if (text === "Logout") {
+      dispatch(setAuthUser(null));
+      dispatch(setPosts([]));
+      dispatch(setSelectedPost(null));
       navigate("/logout", {
         replace: true,
       });
-    else if (text === "Create") setCreateDialogOpen(true);
+    } else if (text === "Create") setCreateDialogOpen(true);
   };
 
   return (
-    <div className="w-[20vw] px-5 py-10">
+    <div className="w-[20vw] px-5 py-10 fixed border-r-2 border-gray-500 h-screen">
       <div className="mb-10 text-black text-5xl font-extrabold">LOGO</div>
       <div className="flex flex-col gap-5">
         {SideBarData.map((item, idx) => (

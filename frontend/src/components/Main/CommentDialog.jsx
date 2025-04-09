@@ -5,15 +5,19 @@ import { Link } from "react-router-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSelector } from "react-redux";
+import Comment from "./Comment";
 
 const CommentDialog = (props) => {
+  const { selectedPost } = useSelector((store) => store.post);
+
   return (
     <Dialog open={props.open} onOpenChange={props.setOpen}>
       <DialogContent className={"min-w-[60vw] p-0 flex flex-col"}>
         <div className="flex flex-1">
           <div className="w-1/2">
             <img
-              src="https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp"
+              src={selectedPost?.image}
               alt="img"
               className="rounded-lg w-full h-full object-cover"
             />
@@ -24,13 +28,15 @@ const CommentDialog = (props) => {
                 <div className="flex items-center justify-between">
                   <Link>
                     <Avatar>
-                      <AvatarImage />
+                      <AvatarImage src={selectedPost?.author?.profilePicture} />
                       <AvatarFallback>AK</AvatarFallback>
                     </Avatar>
                   </Link>
                   <div className="flex flex-col ml-2 gap-1">
-                    <Link className="font-semibold text-sm">username</Link>
-                    <span className="text-xs">Bio</span>
+                    <Link className="font-semibold text-sm">
+                      {selectedPost?.author?.username}
+                    </Link>
+                    <span className="text-xs">{selectedPost?.author?.bio}</span>
                   </div>
                 </div>
                 <div>
@@ -63,39 +69,9 @@ const CommentDialog = (props) => {
             </div>
             <div className="h-[1px] bg-gray-200"></div>
             <div className="flex-1 max-h-[60vh] overflow-y-auto p-4">
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
-              <div>Comments</div>
+              {selectedPost?.comments?.map((comment) => (
+                <Comment key={comment?._id} comment={comment} />
+              ))}
             </div>
             <div className="flex items-center gap-3">
               <Input
@@ -106,7 +82,10 @@ const CommentDialog = (props) => {
                 className="focus-visible:outline-none w-full"
               />
               {props.comment.trim() && (
-                <span onClick={props.commentHandler} className="text-blue-500 text-bold hover:underline cursor-pointer">
+                <span
+                  onClick={props.commentHandler}
+                  className="text-blue-500 text-bold hover:underline cursor-pointer"
+                >
                   Send
                 </span>
               )}
