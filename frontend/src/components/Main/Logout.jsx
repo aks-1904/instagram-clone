@@ -3,7 +3,8 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setAuthUser } from "../../redux/authSlice";
+import { setAuthUser, setSuggestedUsers } from "../../redux/authSlice";
+import { setPosts } from "../../redux/postSlice";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ const Logout = () => {
 
         if (res.data.success) {
           dispatch(setAuthUser(null));
+          dispatch(setPosts([]));
+          dispatch(setSuggestedUsers([]));
           toast.success(res.data.message);
           navigate("/login", {
             replace: true,

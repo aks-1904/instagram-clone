@@ -99,6 +99,9 @@ const SideBar = () => {
         replace: true,
       });
     } else if (text === "Create") setCreateDialogOpen(true);
+    else if (text === user?.username) {
+      navigate(`/profile/${user?._id}`);
+    } else if (text === "Home") navigate("/home");
   };
 
   return (
