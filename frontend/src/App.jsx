@@ -8,6 +8,7 @@ import Chat from "./components/Main/Chat";
 import Logout from "./components/Main/Logout";
 import CreatePost from "./components/Main/CreatePost";
 import Profile from "./components/Main/Profile";
+import EditProfile from "./components/Main/EditProfile";
 
 const BrowserRouter = createBrowserRouter([
   {
@@ -28,12 +29,16 @@ const BrowserRouter = createBrowserRouter([
       },
       {
         path: "/create",
-        element: <CreatePost />
+        element: <CreatePost />,
       },
       {
         path: "/profile/:id",
-        element: <Profile />
-      }
+        element: <Profile />,
+      },
+      {
+        path: "/profile/edit",
+        element: <EditProfile />,
+      },
     ],
   },
   {

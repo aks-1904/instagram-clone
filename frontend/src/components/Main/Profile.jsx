@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useGetUserProfile from "../../hooks/useGetUserProfile";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AtSign, User } from "lucide-react";
+import { AtSign } from "lucide-react";
 import { FaComment, FaHeart } from "react-icons/fa";
 
 const Profile = () => {
   const { id } = useParams();
   useGetUserProfile(id);
+  const navigate = useNavigate();
 
   const { selectedUser, user } = useSelector((store) => store.auth);
   const isLoggedInUser = user?._id === id;
@@ -41,6 +42,9 @@ const Profile = () => {
                         <Button
                           variant="secondary"
                           className={"hover:bg-gray-200 h-8"}
+                          onClick={() =>
+                            navigate("/profile/edit", { replace: true })
+                          }
                         >
                           Edit Profile
                         </Button>

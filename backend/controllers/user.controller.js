@@ -146,7 +146,7 @@ export const editProfile = async (req, res) => {
       cloudResponse = await cloudinary.uploader.upload(fileUri);
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-password");
 
     if (bio) user.bio = bio;
     if (gender) user.gender = gender;
