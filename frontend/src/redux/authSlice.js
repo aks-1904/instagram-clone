@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import React, { useParams } from "react";
 
 const authSlice = createSlice({
   name: "auth",
@@ -7,6 +6,8 @@ const authSlice = createSlice({
     user: null,
     suggestedUsers: [],
     selectedUser: null,
+    chatUser: null,
+    onlineUsers: [],
   },
   reducers: {
     setAuthUser: (state, action) => {
@@ -18,9 +19,15 @@ const authSlice = createSlice({
     setSelectedUser: (state, action) => {
       state.selectedUser = action.payload;
     },
+    setChatUser: (state, action) => {
+      state.chatUser = action.payload;
+    },
+    setOnlineUsers: (state,action)=>{
+      state.onlineUsers = action.payload;
+    }
   },
 });
 
-export const { setAuthUser, setSuggestedUsers, setSelectedUser } =
+export const { setAuthUser, setSuggestedUsers, setSelectedUser, setChatUser, setOnlineUsers } =
   authSlice.actions;
 export default authSlice.reducer;

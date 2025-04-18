@@ -6,11 +6,11 @@ import connectDB from './utils/db.js';
 import userRoute from './routes/user.route.js';
 import postRoute from './routes/post.route.js';
 import messageRoute from './routes/message.route.js';
+import { app, server } from "./socketio/socketio.js";
 
 dotenv.config();
 
 const PORT = process.env.PORT;
-const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
@@ -31,7 +31,7 @@ app.get("/", (req, res)=>{
     });
 });
 
-app.listen(PORT, async ()=>{
+server.listen(PORT, async ()=>{
     await connectDB();
     console.log(`Server listening to http://localhost:${PORT}`);
 });

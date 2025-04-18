@@ -43,7 +43,7 @@ const SideBar = () => {
     {
       deactiveIcon: <BiMessageSquare size={30} />,
       activeIcon: <BiSolidMessageSquare size={30} />,
-      text: "Explore",
+      text: "Chat",
     },
     {
       deactiveIcon: <FaRegHeart size={30} />,
@@ -102,6 +102,7 @@ const SideBar = () => {
     else if (text === user?.username) {
       navigate(`/profile/${user?._id}`);
     } else if (text === "Home") navigate("/home");
+    else if (text === "Chat") navigate("/chat");
   };
 
   return (
