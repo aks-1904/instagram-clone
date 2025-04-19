@@ -15,8 +15,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { IoLogOutSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import CreatePost from "./CreatePost";
-import { setAuthUser } from "../../redux/authSlice";
+import {
+  setAuthUser,
+  setChatUser,
+  setOnlineUsers,
+  setSelectedUser,
+  setSuggestedUsers,
+} from "../../redux/authSlice";
 import { setPosts, setSelectedPost } from "../../redux/postSlice";
+import { setSocket } from "../../redux/socketSlice";
+import { setMessages } from "../../redux/chatSlice";
 
 const SideBar = () => {
   const location = useLocation();
@@ -95,6 +103,12 @@ const SideBar = () => {
       dispatch(setAuthUser(null));
       dispatch(setPosts([]));
       dispatch(setSelectedPost(null));
+      dispatch(setChatUser(null));
+      dispatch(setOnlineUsers([]));
+      dispatch(setSelectedUser(null));
+      dispatch(setSuggestedUsers([]));
+      dispatch(setSocket(null));
+      dispatch(setMessages([]));
       navigate("/logout", {
         replace: true,
       });

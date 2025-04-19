@@ -24,7 +24,7 @@ app.use("/user", userRoute);
 app.use("/post", postRoute);
 app.use("/message", messageRoute);
 
-app.get("/", (req, res)=>{
+app.get("/", (_, res)=>{
     return res.status(200).json({
         message: "Hello World",
         success: true,

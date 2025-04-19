@@ -61,6 +61,7 @@ const BrowserRouter = createBrowserRouter([
 
 const App = () => {
   const { user } = useSelector((store) => store.auth);
+  const { socket } = useSelector((store) => store.socketio);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -81,8 +82,8 @@ const App = () => {
         socketio.close();
         dispatch(setSocket(null));
       };
-    } else {
-      socketio.close();
+    } else if (socket) {
+      socket?.close();
       dispatch(setSocket(null));
     }
   }, [user, dispatch]);
