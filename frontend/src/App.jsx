@@ -13,39 +13,74 @@ import { io } from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import { setSocket } from "./redux/socketSlice";
 import { setOnlineUsers } from "./redux/authSlice";
+import { setLikeNotification } from "./redux/notificationSlice";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 const BrowserRouter = createBrowserRouter([
   {
     path: "/",
-    element: <Main />,
+    element: (
+      <ProtectedRoutes>
+        {" "}
+        <Main />
+      </ProtectedRoutes>
+    ),
     children: [
       {
         path: "/home",
-        element: <Home />,
+        element: (
+          <ProtectedRoutes>
+            <Home />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "/chat",
-        element: <Chat />,
+        element: (
+          <ProtectedRoutes>
+            <Chat />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "/logout",
-        element: <Logout />,
+        element: (
+          <ProtectedRoutes>
+            <Logout />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "/create",
-        element: <CreatePost />,
+        element: (
+          <ProtectedRoutes>
+            <CreatePost />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "/profile/:id",
-        element: <Profile />,
+        element: (
+          <ProtectedRoutes>
+            <Profile />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "/profile/edit",
-        element: <EditProfile />,
+        element: (
+          <ProtectedRoutes>
+            <EditProfile />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "/chat",
-        element: <Chat />,
+        element: (
+          <ProtectedRoutes>
+            <Chat />
+          </ProtectedRoutes>
+        ),
       },
     ],
   },
@@ -76,6 +111,10 @@ const App = () => {
 
       socketio.on("getOnlineUsers", (onlineUsers) => {
         dispatch(setOnlineUsers(onlineUsers));
+      });
+
+      socketio.on("notification", (notification) => {
+        dispatch(setLikeNotification(notification));
       });
 
       return () => {

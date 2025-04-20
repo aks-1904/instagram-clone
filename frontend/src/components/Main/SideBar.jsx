@@ -25,12 +25,16 @@ import {
 import { setPosts, setSelectedPost } from "../../redux/postSlice";
 import { setSocket } from "../../redux/socketSlice";
 import { setMessages } from "../../redux/chatSlice";
+import { setLikeNotification } from "../../redux/notificationSlice";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
 
 const SideBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const { likeNotification } = useSelector((store) => store.notification);
 
   const SideBarData = [
     {
@@ -109,6 +113,7 @@ const SideBar = () => {
       dispatch(setSuggestedUsers([]));
       dispatch(setSocket(null));
       dispatch(setMessages([]));
+      dispatch(setLikeNotification([]));
       navigate("/logout", {
         replace: true,
       });
@@ -127,7 +132,7 @@ const SideBar = () => {
           <div
             onClick={() => sideBarClickHandler(item.text)}
             key={idx}
-            className={`flex items-center gap-5 cursor-pointer hover:bg-zinc-100 transition-colors duration-200 px-2 py-3 rounded-md ${
+            className={`flex items-center relative gap-5 cursor-pointer hover:bg-zinc-100 transition-colors duration-200 px-2 py-3 rounded-md ${
               location.pathname === item.path ? "bg-zinc-100" : ""
             }`}
           >
@@ -135,6 +140,44 @@ const SideBar = () => {
               ? item.activeIcon
               : item.deactiveIcon}
             <p className="text-2xl font-bold">{item.text}</p>
+            {item.text === "Notifications" && likeNotification?.length > 0 && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    size={"icon"}
+                    className={
+                      "rounded-full h-5 w-5 absolute bottom-6 left-6 bg-red-500 hover:bg-red-600"
+                    }
+                  >
+                    {likeNotification?.length}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <div>
+                    {likeNotification?.length === 0 ? (
+                      <p>No new notification</p>
+                    ) : (
+                      likeNotification?.map((notification) => (
+                        <div key={notification?._id} className="flex gap-3 items-center">
+                          <Avatar>
+                            <AvatarImage
+                              src={notification?.userDetails?.profilePicture}
+                            />
+                            <AvatarFallback>AK</AvatarFallback>
+                          </Avatar>
+                          <p className="text-sm">
+                            <span className="font-bold">
+                              {notification?.userDetails?.username}
+                            </span>{"  "}
+                            liked your post
+                          </p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
           </div>
         ))}
       </div>

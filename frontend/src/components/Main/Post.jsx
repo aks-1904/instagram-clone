@@ -3,7 +3,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { FaHeart, FaRegComment } from "react-icons/fa";
+import { FaBookmark, FaHeart, FaRegComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { IoIosSend } from "react-icons/io";
 import { FaRegBookmark } from "react-icons/fa";
@@ -116,6 +116,21 @@ const Post = ({ data }) => {
     }
   };
 
+  const bookmarkHandler = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/post/bookmark/${data?._id}`,
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        toast.success(res.data?.message);
+      }
+    } catch (error) {
+      toast.error(res?.response?.data?.message);
+    }
+  };
+
   return (
     <div className="min-w-[20vw] max-w-[40vw]">
       <div className="flex items-center justify-between">
@@ -125,21 +140,28 @@ const Post = ({ data }) => {
             <AvatarFallback>AK</AvatarFallback>
           </Avatar>
           <p>{data?.author?.username}</p>
-          {user?._id === data?.author?._id && <Badge variant={"secondary"}>Author</Badge>}
+          {user?._id === data?.author?._id && (
+            <Badge variant={"secondary"}>Author</Badge>
+          )}
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger className={"cursor-pointer"}>
             <BsThreeDotsVertical onClick={() => setOpen(true)} size={30} />
           </DialogTrigger>
           <DialogContent className="grid grid-cols-1 items-center">
+            {data?.author?._id !== user?._id && (
+              <Button
+                className={
+                  "py-5 px-9 text-red-500 bg-white border-2 border-gray-200 hover:bg-gray-100 cursor-pointer mt-5"
+                }
+              >
+                {user?.following?.includes(data?.author?._id)
+                  ? "Unfollow"
+                  : "Follow"}
+              </Button>
+            )}
             <Button
-              className={
-                "py-5 px-9 text-red-500 bg-white border-2 border-gray-200 hover:bg-gray-100 cursor-pointer mt-5"
-              }
-            >
-              Unfollow
-            </Button>
-            <Button
+              onClick={bookmarkHandler}
               className={
                 "py-5 px-9 text-black bg-white border-2 border-gray-200 hover:bg-gray-100 cursor-pointer"
               }
@@ -192,10 +214,19 @@ const Post = ({ data }) => {
           <IoIosSend size={30} className="cursor-pointer hover:text-gray-600" />
         </div>
         <div>
-          <FaRegBookmark
-            size={30}
-            className="cursor-pointer hover:text-gray-600"
-          />
+          {user?.bookmarks?.includes(data?._id) ? (
+            <FaBookmark
+              onClick={bookmarkHandler}
+              size={30}
+              className="cursor-pointer hover:text-gray-600"
+            />
+          ) : (
+            <FaRegBookmark
+              onClick={bookmarkHandler}
+              size={30}
+              className="cursor-pointer hover:text-gray-600"
+            />
+          )}
         </div>
       </div>
       <span className="font-medium block my-2">{postLike} likes</span>
